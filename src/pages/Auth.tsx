@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,25 +25,24 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
-        if (newSession?.user) {
-          navigate("/", { replace: true });
-        }
-      }
-    );
-
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      if (data.session?.user) {
-        navigate("/", { replace: true });
+    // Check if user is already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate("/dashboard");
       }
     });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        navigate("/dashboard");
+      }
+    });
+
     return () => {
-      listener.subscription.unsubscribe();
+      subscription.unsubscribe();
     };
   }, [navigate]);
 
@@ -98,6 +97,7 @@ const Auth = () => {
           title: "Welcome back!",
           description: "You've signed in successfully.",
         });
+        navigate("/dashboard");
       } else {
         const { error: signUpError } = await supabase.auth.signUp({
           email: form.email,
@@ -129,149 +129,200 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="w-full max-w-md mx-auto rounded-xl shadow-lg p-8 space-y-6">
-        <div className="flex flex-col items-center gap-2">
-          <Logo size="lg" />
-          <h2 className="text-2xl font-bold tracking-tight mt-4 text-center">
-            {mode === "signin"
-              ? "Sign In"
-              : mode === "signup"
-              ? "Create your account"
-              : "Reset Password"}
-          </h2>
-          <p className="text-sm text-center text-gray-500">
-            {mode === "signin"
-              ? "Welcome back to Risitify."
-              : mode === "signup"
-              ? "Start your journey with fast, flexible invoicing."
-              : "Enter your email address and we'll send you a link to reset your password."}
-          </p>
-        </div>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          {mode === "signup" && (
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <Label htmlFor="first_name">First Name</Label>
-                <Input
-                  id="first_name"
-                  name="first_name"
-                  type="text"
-                  autoComplete="given-name"
-                  value={form.first_name}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                  placeholder="John"
-                />
-              </div>
-              <div className="flex-1">
-                <Label htmlFor="last_name">Last Name</Label>
-                <Input
-                  id="last_name"
-                  name="last_name"
-                  type="text"
-                  autoComplete="family-name"
-                  value={form.last_name}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                  placeholder="Doe"
-                />
-              </div>
-            </div>
-          )}
+    <div className="min-h-screen bg-white flex">
+      {/* Left Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12">
+        <div className="w-full max-w-md space-y-8">
           <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              disabled={loading}
-              placeholder="you@example.com"
-            />
+            <Link to="/" className="inline-block">
+              <Logo />
+            </Link>
+            <h1 className="mt-8 text-4xl font-bold text-gray-900">
+              {mode === "signin"
+                ? "Welcome back"
+                : mode === "signup"
+                ? "Create Account"
+                : "Reset Password"}
+            </h1>
+            <p className="mt-3 text-gray-600">
+              {mode === "signin"
+                ? "Sign in to manage your invoices"
+                : mode === "signup"
+                ? "Join us and start managing your invoices with ease"
+                : "Enter your email to reset your password"}
+            </p>
           </div>
-          {mode !== "forgot-password" && (
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete={
-                  mode === "signup" ? "new-password" : "current-password"
-                }
-                value={form.password}
-                onChange={handleChange}
-                required
-                disabled={loading}
-                placeholder="••••••••"
-              />
-            </div>
-          )}
-          {error && <div className="text-sm text-red-600">{error}</div>}
-          <Button
-            type="submit"
-            className="w-full bg-[#84ebdb] hover:bg-[#84ebdb]/90 text-gray-900 py-3 rounded-xl text-base font-medium transition-colors"
-            disabled={loading}
-          >
-            {loading
-              ? "Loading..."
-              : mode === "signin"
-              ? "Sign In"
-              : mode === "signup"
-              ? "Sign Up"
-              : "Send Reset Link"}
-          </Button>
-        </form>
-        <div className="text-center mt-4 text-sm text-gray-600">
-          {mode === "signin" ? (
-            <>
-              Don't have an account?{" "}
-              <button
-                className="text-purple-600 hover:text-purple-500 font-medium"
-                onClick={() => setMode("signup")}
-                disabled={loading}
-              >
-                Sign Up
-              </button>
-              <div className="mt-2">
-                <button
-                  className="text-purple-600 hover:text-purple-500 font-medium"
-                  onClick={() => setMode("forgot-password")}
-                  disabled={loading}
-                >
-                  Forgot Password?
-                </button>
+
+          <form className="mt-12 space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-5">
+              {mode === "signup" && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="first_name">First Name</Label>
+                    <Input
+                      id="first_name"
+                      name="first_name"
+                      type="text"
+                      autoComplete="given-name"
+                      required
+                      value={form.first_name}
+                      onChange={handleChange}
+                      className="mt-1"
+                      placeholder="John"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="last_name">Last Name</Label>
+                    <Input
+                      id="last_name"
+                      name="last_name"
+                      type="text"
+                      autoComplete="family-name"
+                      required
+                      value={form.last_name}
+                      onChange={handleChange}
+                      className="mt-1"
+                      placeholder="Doe"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <Label htmlFor="email">Email address</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={form.email}
+                  onChange={handleChange}
+                  className="mt-1"
+                  placeholder="you@example.com"
+                />
               </div>
-            </>
-          ) : mode === "signup" ? (
-            <>
-              Already have an account?{" "}
-              <button
-                className="text-purple-600 hover:text-purple-500 font-medium"
-                onClick={() => setMode("signin")}
-                disabled={loading}
-              >
-                Sign In
-              </button>
-            </>
-          ) : (
-            <>
-              Remember your password?{" "}
-              <button
-                className="text-purple-600 hover:text-purple-500 font-medium"
-                onClick={() => setMode("signin")}
-                disabled={loading}
-              >
-                Sign In
-              </button>
-            </>
-          )}
+
+              {mode !== "forgot-password" && (
+                <div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    {mode === "signin" && (
+                      <button
+                        type="button"
+                        onClick={() => setMode("forgot-password")}
+                        className="text-sm font-medium text-[#0A2722] hover:text-[#0A2722]/80"
+                      >
+                        Forgot password?
+                      </button>
+                    )}
+                  </div>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete={
+                      mode === "signup" ? "new-password" : "current-password"
+                    }
+                    required
+                    value={form.password}
+                    onChange={handleChange}
+                    className="mt-1"
+                    placeholder="••••••••"
+                  />
+                </div>
+              )}
+            </div>
+
+            {error && (
+              <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
+                {error}
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full bg-[#84ebdb] hover:bg-[#84ebdb]/90 text-gray-900 py-4 rounded-xl text-lg font-medium transition-colors"
+              disabled={loading}
+            >
+              {loading
+                ? "Loading..."
+                : mode === "signin"
+                ? "Sign in"
+                : mode === "signup"
+                ? "Create account"
+                : "Send reset link"}
+            </Button>
+
+            <div className="text-center text-sm text-gray-600">
+              {mode === "signin" ? (
+                <>
+                  Don't have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setMode("signup")}
+                    className="text-[#0A2722] hover:text-[#0A2722]/80 font-medium"
+                  >
+                    Sign up
+                  </button>
+                </>
+              ) : mode === "signup" ? (
+                <>
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setMode("signin")}
+                    className="text-[#0A2722] hover:text-[#0A2722]/80 font-medium"
+                  >
+                    Sign in
+                  </button>
+                </>
+              ) : (
+                <>
+                  Remember your password?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setMode("signin")}
+                    className="text-[#0A2722] hover:text-[#0A2722]/80 font-medium"
+                  >
+                    Sign in
+                  </button>
+                </>
+              )}
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* Right Side - Illustration */}
+      <div className="hidden lg:block lg:w-1/2 bg-[#0A2722] relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A2722] to-[#0A2722]/90"></div>
+        <div className="absolute inset-0">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 bg-[#84ebdb]/5 backdrop-blur-3xl">
+            <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-[#84ebdb]/20 rounded-full filter blur-3xl animate-float"></div>
+            <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[#84ebdb]/10 rounded-full filter blur-3xl animate-float-delay"></div>
+          </div>
+
+          {/* Content */}
+          <div className="relative h-full flex items-center justify-center p-12">
+            <div className="max-w-lg text-center">
+              <h2 className="text-3xl font-bold text-white mb-6">
+                {mode === "signin"
+                  ? "Welcome back to Risitify"
+                  : mode === "signup"
+                  ? "Start Your Journey with Risitify"
+                  : "Recover Your Account"}
+              </h2>
+              <p className="text-lg text-[#84ebdb]/80">
+                {mode === "signin"
+                  ? "Access your account to manage invoices, track payments, and grow your business."
+                  : mode === "signup"
+                  ? "Join thousands of businesses using Risitify to streamline their invoicing process."
+                  : "Don't worry, we'll help you get back on track."}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

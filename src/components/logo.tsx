@@ -4,30 +4,18 @@ import { cn } from "@/lib/utils";
 interface LogoProps {
   className?: string;
   size?: "sm" | "md" | "lg";
-  variant?: "light" | "dark";
 }
 
-const Logo: FC<LogoProps> = ({ className, size = "md", variant = "dark" }) => {
-  const sizeClasses = {
+export default function Logo({ className = "", size = "md" }: LogoProps) {
+  const sizes = {
     sm: "h-6",
     md: "h-8",
     lg: "h-10",
   };
 
-  const variantClasses = {
-    light: "text-white",
-    dark: "text-gray-900",
-  };
-
   return (
-    <div className={cn("font-bold flex items-center gap-2", className)}>
-      <img
-        src="/lovable-uploads/39b36c02-3251-478f-94b4-580a32242016.png"
-        alt="Risitify Logo"
-        className={cn(sizeClasses[size])}
-      />
+    <div className={`flex items-center ${className}`}>
+      <span className={`font-bold text-gray-900 ${sizes[size]}`}>Risitify</span>
     </div>
   );
-};
-
-export default Logo;
+}

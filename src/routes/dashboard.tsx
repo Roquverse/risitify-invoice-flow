@@ -2,13 +2,14 @@ import { Route, Routes } from "react-router-dom";
 import DashboardOverview from "@/pages/dashboard/index";
 import { DashboardShell } from "@/pages/dashboard/components/dashboard-shell";
 import CustomerList from "@/pages/dashboard/customers/list";
-import InvoicesPage from "@/pages/dashboard/sales/invoices";
+import InvoicesPage from "@/pages/dashboard/sales/invoices/index";
 import CreateInvoice from "@/pages/dashboard/sales/invoices/create";
 import QuotesPage from "@/pages/dashboard/sales/quotes";
 import PaymentsReceived from "@/pages/dashboard/payments/received";
 import PaymentHistory from "@/pages/dashboard/payments/history";
 
 import NewCustomer from "@/pages/dashboard/customers/new";
+import SettingsPage from "@/pages/dashboard/settings";
 
 // Creating simple components for each route
 const Dashboard = () => (
@@ -134,7 +135,14 @@ export function DashboardRoutes() {
       {/* Additional Routes */}
       <Route path="reports" element={<Reports />} />
       <Route path="documents" element={<Documents />} />
-      <Route path="settings" element={<Settings />} />
+      <Route
+        path="settings"
+        element={
+          <DashboardShell>
+            <SettingsPage />
+          </DashboardShell>
+        }
+      />
     </Routes>
   );
 }

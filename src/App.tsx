@@ -1,25 +1,23 @@
-
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import { DashboardRoutes } from "./routes/dashboard";
-import SignIn from "./pages/SignIn";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Auth from "./pages/Auth";
-import ForgotPassword from "./pages/forgot-password";
+import Index from "./pages/Index";
+import { DashboardRoutes } from "./routes/dashboard";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<SignIn />} />
-        <Route path="/signup" element={<Auth />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/dashboard/*" element={<DashboardRoutes />} />
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
+    <Router
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
+      <div className="min-h-screen bg-gray-50">
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/dashboard/*" element={<DashboardRoutes />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

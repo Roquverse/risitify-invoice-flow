@@ -2,16 +2,17 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
   Home,
+  ShoppingCart,
+  CreditCard,
+  Clock,
   Users,
+  FileText,
   Settings,
   ChevronRight,
+  BarChart2,
+  Files,
+  List,
   LogOut,
-  ChevronLeft,
-  Receipt,
-  FileBox,
-  CreditCard,
-  PieChart,
-  FolderOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,19 +20,85 @@ import Logo from "@/components/logo";
 import { useState } from "react";
 
 interface NavItem {
+  title: string;
   href: string;
-  label: string;
   icon: React.ElementType;
-  subItems?: {
-    href: string;
-    label: string;
-  }[];
+  badge?: number;
+  children?: NavItem[];
 }
 
 interface SidebarNavProps {
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
 }
+
+const navItems: NavItem[] = [
+  {
+    title: "Home",
+    href: "/dashboard",
+    icon: Home,
+    badge: 2,
+  },
+  {
+    title: "Items",
+    href: "/dashboard/items",
+    icon: List,
+  },
+  {
+    title: "Banking",
+    href: "/dashboard/banking",
+    icon: CreditCard,
+  },
+  {
+    title: "Sales",
+    href: "/dashboard/sales",
+    icon: ShoppingCart,
+    children: [
+      {
+        title: "Invoices",
+        href: "/dashboard/sales/invoices",
+        icon: FileText,
+      },
+      {
+        title: "Customers",
+        href: "/dashboard/sales/customers",
+        icon: Users,
+      },
+    ],
+  },
+  {
+    title: "Purchases",
+    href: "/dashboard/purchases",
+    icon: ShoppingCart,
+    children: [
+      {
+        title: "Bills",
+        href: "/dashboard/purchases/bills",
+        icon: FileText,
+      },
+      {
+        title: "Vendors",
+        href: "/dashboard/purchases/vendors",
+        icon: Users,
+      },
+    ],
+  },
+  {
+    title: "Time Tracking",
+    href: "/dashboard/time",
+    icon: Clock,
+  },
+  {
+    title: "Reports",
+    href: "/dashboard/reports",
+    icon: BarChart2,
+  },
+  {
+    title: "Documents",
+    href: "/dashboard/documents",
+    icon: Files,
+  },
+];
 
 export function SidebarNav({ collapsed, setCollapsed }: SidebarNavProps) {
   const location = useLocation();
@@ -40,68 +107,6 @@ export function SidebarNav({ collapsed, setCollapsed }: SidebarNavProps) {
   const isActive = (path: string) => {
     return location.pathname === path;
   };
-
-  const navItems: NavItem[] = [
-    {
-      href: "/dashboard",
-      label: "Home",
-      icon: Home,
-    },
-    {
-      href: "/dashboard/customers",
-      label: "Customers",
-      icon: Users,
-      subItems: [
-        { href: "/dashboard/customers/list", label: "Customer List" },
-        { href: "/dashboard/customers/new", label: "Add New Customer" },
-      ],
-    },
-    {
-      href: "/dashboard/sales/invoices",
-      label: "Invoices",
-      icon: Receipt,
-      subItems: [
-        { href: "/dashboard/sales/invoices", label: "All Invoices" },
-        {
-          href: "/dashboard/sales/invoices/create",
-          label: "Create Invoice",
-        },
-      ],
-    },
-    {
-      href: "/dashboard/sales/quotes",
-      label: "Quotes",
-      icon: FileBox,
-      subItems: [
-        { href: "/dashboard/sales/quotes", label: "All Quotes" },
-        { href: "/dashboard/sales/new", label: "Create Quote" },
-      ],
-    },
-    {
-      href: "/dashboard/payments",
-      label: "Payments",
-      icon: CreditCard,
-      subItems: [
-        { href: "/dashboard/payments/received", label: "Payments Received" },
-        { href: "/dashboard/payments/history", label: "Payment History" },
-      ],
-    },
-    {
-      href: "/dashboard/reports",
-      label: "Reports",
-      icon: PieChart,
-    },
-    {
-      href: "/dashboard/documents",
-      label: "Documents",
-      icon: FolderOpen,
-    },
-    {
-      href: "/dashboard/settings",
-      label: "Settings",
-      icon: Settings,
-    },
-  ];
 
   return (
     <>
@@ -113,78 +118,90 @@ export function SidebarNav({ collapsed, setCollapsed }: SidebarNavProps) {
         style={{ marginRight: 0 }}
       >
         <div className="flex h-16 items-center justify-between px-4 border-b">
-          {!collapsed && (
-            <Logo size="sm" variant="dark" className="text-[#153f32]" />
-          )}
+          {!collapsed && <Logo size="sm" className="text-[#153f32]" />}
           <Button
             variant="ghost"
             size="icon"
             className="ml-auto text-gray-500 hover:text-[#153f32] hover:bg-gray-100"
             onClick={() => setCollapsed(!collapsed)}
           >
-            {collapsed ? <ChevronRight /> : <ChevronLeft />}
+            {collapsed ? <ChevronRight /> : <ChevronRight />}
           </Button>
         </div>
 
         <ScrollArea className="h-[calc(100vh-4rem)]">
           <div className="space-y-1 p-2 mb-24">
-            {navItems.map((item) => (
-              <div key={item.href} className="relative">
-                <Link
-                  to={item.href}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
-                    isActive(item.href) || activeDropdown === item.href
-                      ? "bg-[#153f32] text-white"
-                      : "text-gray-700 hover:bg-gray-100",
-                    collapsed && "justify-center px-2"
-                  )}
-                  onClick={(e) => {
-                    if (item.subItems) {
-                      e.preventDefault();
-                      setActiveDropdown(
-                        activeDropdown === item.href ? null : item.href
-                      );
-                    }
-                  }}
-                >
-                  <item.icon className="h-5 w-5" />
-                  {!collapsed && (
-                    <>
-                      <span className="flex-1 text-left">{item.label}</span>
-                      {item.subItems && (
-                        <ChevronRight
-                          className={cn(
-                            "h-4 w-4 transition-transform",
-                            activeDropdown === item.href && "rotate-90"
-                          )}
-                        />
-                      )}
-                    </>
-                  )}
-                </Link>
-                {item.subItems &&
-                  activeDropdown === item.href &&
-                  !collapsed && (
-                    <div className="mt-1 ml-4 pl-4 border-l-2 border-[#153f32]/20">
-                      {item.subItems.map((subItem) => (
-                        <Link
-                          key={subItem.href}
-                          to={subItem.href}
-                          className={cn(
-                            "flex items-center py-2 px-3 text-sm rounded-lg transition-colors",
-                            isActive(subItem.href)
-                              ? "text-[#153f32] font-medium"
-                              : "text-gray-600 hover:text-[#153f32]"
-                          )}
-                        >
-                          {subItem.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-              </div>
-            ))}
+            {navItems.map((item) => {
+              const isActive =
+                location.pathname === item.href ||
+                item.children?.some(
+                  (child) => location.pathname === child.href
+                );
+
+              return (
+                <div key={item.href} className="relative">
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
+                      isActive
+                        ? "bg-[#153f32] text-white"
+                        : "text-gray-700 hover:bg-gray-100",
+                      collapsed && "justify-center px-2"
+                    )}
+                    onClick={(e) => {
+                      if (item.children) {
+                        e.preventDefault();
+                        setActiveDropdown(
+                          activeDropdown === item.href ? null : item.href
+                        );
+                      }
+                    }}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {!collapsed && (
+                      <>
+                        <span className="flex-1 text-left">{item.title}</span>
+                        {item.badge && (
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 text-xs text-blue-600">
+                            {item.badge}
+                          </span>
+                        )}
+                        {item.children && (
+                          <ChevronRight
+                            className={cn(
+                              "h-4 w-4 transition-transform",
+                              activeDropdown === item.href && "rotate-90"
+                            )}
+                          />
+                        )}
+                      </>
+                    )}
+                  </Link>
+                  {!collapsed &&
+                    item.children &&
+                    activeDropdown === item.href && (
+                      <div className="mt-1 ml-4 pl-4 border-l-2 border-[#153f32]/20">
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.href}
+                            to={child.href}
+                            className={cn(
+                              "flex items-center py-2 px-3 text-sm rounded-lg transition-colors",
+                              location.pathname === child.href
+                                ? "text-[#153f32] font-medium"
+                                : "text-gray-600 hover:text-[#153f32]"
+                            )}
+                          >
+                            <child.icon className="h-4 w-4 mr-2" />
+                            <span>{child.title}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                </div>
+              );
+            })}
           </div>
         </ScrollArea>
 
@@ -234,24 +251,25 @@ export function SidebarNav({ collapsed, setCollapsed }: SidebarNavProps) {
         >
           <div className="p-4 border-b">
             <h3 className="font-medium text-[#153f32]">
-              {navItems.find((item) => item.href === activeDropdown)?.label}
+              {navItems.find((item) => item.href === activeDropdown)?.title}
             </h3>
           </div>
           <div className="p-2">
             {navItems
               .find((item) => item.href === activeDropdown)
-              ?.subItems?.map((subItem) => (
+              ?.children?.map((child) => (
                 <Link
-                  key={subItem.href}
-                  to={subItem.href}
+                  key={child.href}
+                  to={child.href}
                   className={cn(
                     "flex items-center py-2 px-3 text-sm rounded-lg transition-colors",
-                    isActive(subItem.href)
-                      ? "text-[#153f32] font-medium bg-gray-50"
+                    location.pathname === child.href
+                      ? "text-[#153f32] font-medium"
                       : "text-gray-600 hover:text-[#153f32] hover:bg-gray-50"
                   )}
                 >
-                  {subItem.label}
+                  <child.icon className="h-4 w-4" />
+                  <span>{child.title}</span>
                 </Link>
               ))}
           </div>
