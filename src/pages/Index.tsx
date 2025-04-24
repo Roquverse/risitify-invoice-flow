@@ -17,7 +17,7 @@ export default function Index() {
           <div className="max-w-[1400px] mx-auto px-8 pt-32 pb-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               {/* Left Content */}
-              <div className="space-y-6">
+              <div className="space-y-6 text-center lg:text-left mx-auto lg:mx-0">
                 {/* Badge */}
                 <div className="inline-flex items-center bg-white/10 rounded-full px-4 py-1.5 text-sm backdrop-blur-sm">
                   INVOICE FINANCING
@@ -26,21 +26,21 @@ export default function Index() {
                 <h1 className="text-4xl md:text-6xl font-medium leading-tight">
                   Send Invoices. Get Paid. Stay in Control.
                 </h1>
-                <p className="text-xl text-gray-300 max-w-xl">
+                <p className="text-xl text-gray-300 max-w-xl mx-auto lg:mx-0">
                   Create professional invoices in seconds, track payments,
                   manage expenses, and grow your business — all from one smart
                   dashboard.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start">
                   <Link to="/signup">
-                    <Button className="bg-[#84ebdb] hover:bg-[#6bdccb] text-gray-900 font-medium px-8 py-6 text-lg">
+                    <Button className="bg-[#84ebdb] hover:bg-[#6bdccb] text-gray-900 font-medium px-8 py-6 text-lg w-full sm:w-auto">
                       Get Started Free
                     </Button>
                   </Link>
                   <Link to="/#features">
                     <Button
                       variant="outline"
-                      className="bg-white/10 backdrop-blur-sm border-0 hover:bg-white/20 text-white font-medium px-8 py-6 text-lg"
+                      className="bg-white/10 backdrop-blur-sm border-0 hover:bg-white/20 text-white font-medium px-8 py-6 text-lg w-full sm:w-auto"
                     >
                       See How it Works
                     </Button>
@@ -48,11 +48,11 @@ export default function Index() {
                 </div>
 
                 {/* Partner Logos */}
-                <div className="pt-12">
+                <div className="pt-12 text-center lg:text-left">
                   <p className="text-sm text-gray-400 mb-4">
                     Trusted by leading companies
                   </p>
-                  <div className="flex flex-wrap gap-8 items-center opacity-70">
+                  <div className="flex flex-wrap gap-8 items-center opacity-70 justify-center lg:justify-start">
                     {[
                       "HubSpot",
                       "Dropbox",
@@ -69,7 +69,7 @@ export default function Index() {
               </div>
 
               {/* Right Content - Hero Image */}
-              <div className="relative">
+              <div className="relative hidden lg:block">
                 {/* Background Gradient Effects */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-[#84ebdb]/30 to-transparent rounded-full filter blur-3xl"></div>
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#84ebdb]/20 rounded-full blur-3xl"></div>
