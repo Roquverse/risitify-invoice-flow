@@ -10,7 +10,7 @@ export function HeroSection() {
     <div className="relative overflow-hidden bg-background py-16 sm:py-24 lg:py-32 border-b">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
+          <div className="text-center lg:text-left">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
               <span>Improve Your</span>
               <br />
@@ -19,11 +19,11 @@ export function HeroSection() {
               <br />
               <span>More Quickly</span>
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground max-w-lg">
+            <p className="mt-6 text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0">
               Professional invoicing software that helps you get paid on time. Easy to use, customizable templates, and automated reminders to help you get paid faster.
             </p>
             
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link to="/signup">
                 <Button size="lg" className="bg-risitify-500 hover:bg-risitify-600">
                   Get Started Free
@@ -36,12 +36,12 @@ export function HeroSection() {
               </Link>
             </div>
             
-            <p className="mt-4 text-sm text-muted-foreground">
+            <p className="mt-4 text-sm text-muted-foreground text-center lg:text-left">
               No credit card required. Free 14-day trial.
             </p>
           </div>
 
-          <div className="relative">
+          <div className="relative hidden lg:block">
             <div className="absolute inset-0 bg-gradient-to-r from-risitify-500/20 to-transparent rounded-3xl transform rotate-3 scale-105" />
             <div className="relative bg-white p-4 rounded-2xl shadow-xl border">
               <img

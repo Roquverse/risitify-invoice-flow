@@ -36,6 +36,197 @@ export type Database = {
         }
         Relationships: []
       }
+      activity_log: {
+        Row: {
+          activity_type: string
+          created_at: string | null
+          description: string
+          id: number
+          organization_id: string
+          related_id: string | null
+          related_table: string | null
+          user_id: string | null
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string | null
+          description: string
+          id?: number
+          organization_id: string
+          related_id?: string | null
+          related_table?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string | null
+          description?: string
+          id?: number
+          organization_id?: string
+          related_id?: string | null
+          related_table?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bank_accounts: {
+        Row: {
+          account_name: string
+          account_number: string
+          balance: number
+          bank_name: string
+          created_at: string
+          currency: string
+          id: string
+          last_synced: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_name: string
+          account_number: string
+          balance?: number
+          bank_name: string
+          created_at?: string
+          currency: string
+          id?: string
+          last_synced?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_name?: string
+          account_number?: string
+          balance?: number
+          bank_name?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          last_synced?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      customers: {
+        Row: {
+          address: string | null
+          city: string | null
+          company: string | null
+          country: string | null
+          created_at: string | null
+          email: string
+          id: string
+          name: string
+          notes: string | null
+          payment_terms: string | null
+          phone: string | null
+          state: string | null
+          tax_id: string | null
+          updated_at: string | null
+          zip: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          company?: string | null
+          country?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          name: string
+          notes?: string | null
+          payment_terms?: string | null
+          phone?: string | null
+          state?: string | null
+          tax_id?: string | null
+          updated_at?: string | null
+          zip?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          company?: string | null
+          country?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          payment_terms?: string | null
+          phone?: string | null
+          state?: string | null
+          tax_id?: string | null
+          updated_at?: string | null
+          zip?: string | null
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          amount_due: number
+          created_at: string | null
+          customer_id: string
+          due_date: string | null
+          id: string
+          invoice_number: string | null
+          issued_date: string | null
+          organization_id: string
+          status: string
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          amount_due?: number
+          created_at?: string | null
+          customer_id: string
+          due_date?: string | null
+          id?: string
+          invoice_number?: string | null
+          issued_date?: string | null
+          organization_id: string
+          status?: string
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Update: {
+          amount_due?: number
+          created_at?: string | null
+          customer_id?: string
+          due_date?: string | null
+          id?: string
+          invoice_number?: string | null
+          issued_date?: string | null
+          organization_id?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -63,24 +254,162 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_gateway_settings: {
+        Row: {
+          api_key: string
+          created_at: string
+          gateway_type: Database["public"]["Enums"]["payment_gateway_type"]
+          id: string
+          is_live: boolean
+          organization_id: string
+          secret_key: string
+          updated_at: string
+          webhook_url: string | null
+        }
+        Insert: {
+          api_key: string
+          created_at?: string
+          gateway_type: Database["public"]["Enums"]["payment_gateway_type"]
+          id?: string
+          is_live?: boolean
+          organization_id: string
+          secret_key: string
+          updated_at?: string
+          webhook_url?: string | null
+        }
+        Update: {
+          api_key?: string
+          created_at?: string
+          gateway_type?: Database["public"]["Enums"]["payment_gateway_type"]
+          id?: string
+          is_live?: boolean
+          organization_id?: string
+          secret_key?: string
+          updated_at?: string
+          webhook_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_gateway_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string | null
+          customer_id: string | null
+          id: string
+          invoice_id: string | null
+          method: string | null
+          notes: string | null
+          organization_id: string
+          payment_date: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          customer_id?: string | null
+          id?: string
+          invoice_id?: string | null
+          method?: string | null
+          notes?: string | null
+          organization_id: string
+          payment_date?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          customer_id?: string | null
+          id?: string
+          invoice_id?: string | null
+          method?: string | null
+          notes?: string | null
+          organization_id?: string
+          payment_date?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
+          email: string | null
           first_name: string | null
           id: string
           last_name: string | null
-          updated_at: string
+          phone: number | null
         }
         Insert: {
+          email?: string | null
           first_name?: string | null
           id: string
           last_name?: string | null
-          updated_at?: string
+          phone?: number | null
         }
         Update: {
+          email?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
+          phone?: number | null
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          created_at: string
+          id: string
+          organization: Json | null
+          payment: Json | null
+          profile: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organization?: Json | null
+          payment?: Json | null
+          profile?: Json | null
           updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organization?: Json | null
+          payment?: Json | null
+          profile?: Json | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -92,7 +421,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      payment_gateway_type: "stripe" | "paypal" | "razorpay"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -207,6 +536,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      payment_gateway_type: ["stripe", "paypal", "razorpay"],
+    },
   },
 } as const
