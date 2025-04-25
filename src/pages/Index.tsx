@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
@@ -290,7 +289,7 @@ export default function Index() {
         </section>
 
         {/* Support Section */}
-        <div id="contact">
+        <div id="faq">
           <Support />
         </div>
       </main>
