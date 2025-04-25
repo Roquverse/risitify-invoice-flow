@@ -1,3 +1,4 @@
+
 import { Button } from "./ui/button";
 import Logo from "@/components/logo";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,6 +10,9 @@ const Navbar = () => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
+    } else {
+      // If we're not on the home page, navigate to home and then scroll
+      navigate('/', { state: { scrollTo: sectionId } });
     }
   };
 

@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
@@ -5,7 +6,6 @@ import { SiteFooter } from "@/components/site-footer";
 import Features from "@/components/Features";
 import FlexiblePayment from "@/components/FlexiblePayment";
 import Support from "@/components/Support";
-import CallToAction from "@/components/CallToAction";
 
 export default function Index() {
   return (
@@ -13,7 +13,7 @@ export default function Index() {
       <SiteHeader />
       <main className="flex-1">
         {/* Hero Section */}
-        <div className="w-full bg-[#0A2722] text-white relative overflow-hidden m-0 p-0">
+        <div id="home" className="w-full bg-[#0A2722] text-white relative overflow-hidden m-0 p-0">
           <div className="max-w-[1400px] mx-auto px-8 pt-32 pb-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               {/* Left Content */}
@@ -37,7 +37,7 @@ export default function Index() {
                       Get Started Free
                     </Button>
                   </Link>
-                  <Link to="/#features">
+                  <Link to="#features">
                     <Button
                       variant="outline"
                       className="bg-white/10 backdrop-blur-sm border-0 hover:bg-white/20 text-white font-medium px-8 py-6 text-lg w-full sm:w-auto"
@@ -256,13 +256,17 @@ export default function Index() {
         </div>
 
         {/* Features Section */}
-        <Features />
+        <div id="features">
+          <Features />
+        </div>
 
         {/* How It Works Section */}
-        <FlexiblePayment />
+        <div id="how-it-works">
+          <FlexiblePayment />
+        </div>
 
         {/* Stats Section */}
-        <section className="w-full bg-white py-20 m-0">
+        <section id="pricing" className="w-full bg-white py-20 m-0">
           <div className="max-w-[1400px] mx-auto px-6 md:px-8 lg:px-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <div className="text-center">
@@ -286,10 +290,9 @@ export default function Index() {
         </section>
 
         {/* Support Section */}
-        <Support />
-
-        {/* Call to Action Section */}
-        <CallToAction />
+        <div id="contact">
+          <Support />
+        </div>
       </main>
       <SiteFooter />
     </div>

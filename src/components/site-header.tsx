@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/logo";
 import { Link } from "react-router-dom";
@@ -5,10 +6,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 const mainNavItems = [
-  { label: "Features", href: "/#features" },
-  { label: "How It Works", href: "/#how-it-works" },
-  { label: "Pricing", href: "/#pricing" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Features", href: "#features" },
+  { label: "How It Works", href: "#how-it-works" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "Contact", href: "#contact" },
 ];
 
 export function SiteHeader() {
@@ -33,7 +34,7 @@ export function SiteHeader() {
   }, []);
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+    const element = document.getElementById(sectionId.replace('#', ''));
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
@@ -53,7 +54,7 @@ export function SiteHeader() {
             {mainNavItems.map((item) => (
               <button
                 key={item.href}
-                onClick={() => scrollToSection(item.href.replace("/#", ""))}
+                onClick={() => scrollToSection(item.href)}
                 className="text-gray-600 hover:text-[#0A2722] transition-colors text-sm font-medium"
               >
                 {item.label}
