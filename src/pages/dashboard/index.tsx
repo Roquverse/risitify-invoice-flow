@@ -64,16 +64,6 @@ export default function DashboardOverview() {
         href: "/dashboard/purchases/bills/new",
       },
     },
-    {
-      id: "banking",
-      title: "Set up banking and journals",
-      description:
-        "Connect your bank account to automatically import transactions.",
-      action: {
-        text: "Connect Bank",
-        href: "/dashboard/banking",
-      },
-    },
   ]);
 
   // Recent updates data
@@ -126,7 +116,6 @@ export default function DashboardOverview() {
             if (settings.organization?.completed) completed.push("org-details");
             if (settings.payment?.completed) completed.push("first-invoice");
             if (settings.profile?.completed) completed.push("first-bill");
-            if (settings.banking?.completed) completed.push("banking");
             setCompletedSteps(completed);
           }
         }
