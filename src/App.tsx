@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import { DashboardRoutes } from "./routes/dashboard";
+import Onboarding from "./pages/onboarding";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/dashboard/*" element={<DashboardRoutes />} />
         </Routes>
       </div>

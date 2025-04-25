@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -19,30 +18,50 @@ export default function Onboarding() {
   const [userId, setUserId] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Check authentication and redirect if not authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to complete onboarding.",
+        });
+        navigate("/auth");
+        return;
+      }
+      setUserId(session.user.id);
+    };
+    checkAuth();
+  }, [navigate]);
+
   // Pre-fill profile if user already exists
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      const uid = data.session?.user?.id;
-      setUserId(uid ?? null);
+    if (!userId) return;
 
-      // Fetch profile data if present
-      if (uid) {
-        supabase
-          .from("profiles")
-          .select("first_name,last_name")
-          .eq("id", uid)
-          .maybeSingle()
-          .then(({ data: prof, error }) => {
-            if (prof) setProfile({ first_name: prof.first_name || "", last_name: prof.last_name || "" });
+    supabase
+      .from("profiles")
+      .select("first_name,last_name")
+      .eq("id", userId)
+      .maybeSingle()
+      .then(({ data: prof, error }) => {
+        if (prof)
+          setProfile({
+            first_name: prof.first_name || "",
+            last_name: prof.last_name || "",
           });
-      }
-    });
-  }, []);
+      });
+  }, [userId]);
 
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
-      toast({ title: "Error", description: "User not found. Please sign in again." });
+      toast({
+        title: "Error",
+        description: "User not found. Please sign in again.",
+      });
       return;
     }
     setLoading(true);
@@ -66,21 +85,22 @@ export default function Onboarding() {
   const handleOrgSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
-      toast({ title: "Error", description: "User not found. Please sign in again." });
+      toast({
+        title: "Error",
+        description: "User not found. Please sign in again.",
+      });
       return;
     }
     setLoading(true);
     // Upsert org (single org per user)
-    const { error } = await supabase
-      .from("organizations")
-      .upsert(
-        {
-          user_id: userId,
-          name: org.name,
-          industry: org.industry,
-        },
-        { onConflict: "user_id" }
-      );
+    const { error } = await supabase.from("organizations").upsert(
+      {
+        user_id: userId,
+        name: org.name,
+        industry: org.industry,
+      },
+      { onConflict: "user_id" }
+    );
     setLoading(false);
     if (error) {
       toast({ title: "Error", description: error.message });
@@ -92,39 +112,46 @@ export default function Onboarding() {
   const handleAccountSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
-      toast({ title: "Error", description: "User not found. Please sign in again." });
+      toast({
+        title: "Error",
+        description: "User not found. Please sign in again.",
+      });
       return;
     }
     setLoading(true);
     // Upsert settings (single settings per user)
-    const { error } = await supabase
-      .from("account_settings")
-      .upsert(
-        {
-          user_id: userId,
-          timezone: account.timezone,
-          currency: account.currency,
-        },
-        { onConflict: "user_id" }
-      );
+    const { error } = await supabase.from("account_settings").upsert(
+      {
+        user_id: userId,
+        timezone: account.timezone,
+        currency: account.currency,
+      },
+      { onConflict: "user_id" }
+    );
     setLoading(false);
     if (error) {
       toast({ title: "Error", description: error.message });
     } else {
-      toast({ title: "Onboarding Complete", description: "Redirecting you to your dashboard." });
+      toast({
+        title: "Onboarding Complete",
+        description: "Redirecting you to your dashboard.",
+      });
       navigate("/dashboard", { replace: true });
     }
   };
 
   // Handlers for form inputs
-  const handleInput = (setter: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setter((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const handleInput =
+    (setter: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setter((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+    };
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-white">
       <div className="w-full max-w-lg mx-auto p-6 rounded-xl border shadow-lg">
-        <h1 className="text-2xl font-bold text-center mb-2">Welcome! Let's get started</h1>
+        <h1 className="text-2xl font-bold text-center mb-2">
+          Welcome! Let's get started
+        </h1>
         <div className="flex justify-center gap-1 mb-6">
           {steps.map((s, idx) => (
             <span
@@ -167,7 +194,11 @@ export default function Onboarding() {
                 placeholder="Doe"
               />
             </div>
-            <Button type="submit" className="w-full bg-[#84ebdb] hover:bg-[#84ebdb]/90" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full bg-[#84ebdb] hover:bg-[#84ebdb]/90"
+              disabled={loading}
+            >
               {loading ? "Saving..." : "Next: Organization"}
             </Button>
           </form>
@@ -201,10 +232,18 @@ export default function Onboarding() {
               />
             </div>
             <div className="flex justify-between">
-              <Button type="button" variant="outline" onClick={() => setStep(0)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setStep(0)}
+              >
                 Back
               </Button>
-              <Button type="submit" className="bg-[#84ebdb] hover:bg-[#84ebdb]/90" disabled={loading}>
+              <Button
+                type="submit"
+                className="bg-[#84ebdb] hover:bg-[#84ebdb]/90"
+                disabled={loading}
+              >
                 {loading ? "Saving..." : "Next: Account Setup"}
               </Button>
             </div>
@@ -239,10 +278,18 @@ export default function Onboarding() {
               />
             </div>
             <div className="flex justify-between">
-              <Button type="button" variant="outline" onClick={() => setStep(1)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setStep(1)}
+              >
                 Back
               </Button>
-              <Button type="submit" className="bg-[#84ebdb] hover:bg-[#84ebdb]/90" disabled={loading}>
+              <Button
+                type="submit"
+                className="bg-[#84ebdb] hover:bg-[#84ebdb]/90"
+                disabled={loading}
+              >
                 {loading ? "Saving..." : "Finish & Go to Dashboard"}
               </Button>
             </div>

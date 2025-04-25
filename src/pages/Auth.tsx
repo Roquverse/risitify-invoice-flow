@@ -99,21 +99,45 @@ const Auth = () => {
         });
         navigate("/dashboard");
       } else {
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: form.email,
-          password: form.password,
-          options: {
-            data: {
-              first_name: form.first_name,
-              last_name: form.last_name,
+        // Sign up flow
+        const { data: signUpData, error: signUpError } =
+          await supabase.auth.signUp({
+            email: form.email,
+            password: form.password,
+            options: {
+              data: {
+                first_name: form.first_name,
+                last_name: form.last_name,
+              },
             },
-          },
-        });
+          });
         if (signUpError) throw signUpError;
+
+        // Create profile record
+        if (signUpData.user) {
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .insert([
+              {
+                id: signUpData.user.id,
+                first_name: form.first_name,
+                last_name: form.last_name,
+                email: form.email,
+              },
+            ]);
+
+          if (profileError) {
+            console.error("Error creating profile:", profileError);
+            // Don't throw here, as the user is already created
+          }
+        }
+
         toast({
           title: "Account created",
           description: "Complete your onboarding to get started.",
         });
+
+        // Redirect to onboarding
         navigate("/onboarding");
         return;
       }

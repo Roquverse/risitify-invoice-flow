@@ -26,6 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusCircle, FileText, Download, Send } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function InvoicesPage() {
   console.log("InvoicesPage rendering");
@@ -63,49 +64,12 @@ export default function InvoicesPage() {
             Manage your invoices and track payments
           </p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button className="flex items-center space-x-2">
-              <PlusCircle className="h-4 w-4" />
-              <span>Create Invoice</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle>Create New Invoice</DialogTitle>
-              <DialogDescription>
-                Create a new invoice for your client. Fill in all the required
-                information.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="client">Client Name</Label>
-                  <Input id="client" placeholder="Enter client name" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="amount">Amount</Label>
-                  <Input id="amount" type="number" placeholder="0.00" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dueDate">Due Date</Label>
-                  <Input id="dueDate" type="date" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="currency">Currency</Label>
-                  <Input id="currency" placeholder="USD" />
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">Create Invoice</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Link to="/dashboard/sales/invoices/create">
+          <Button className="flex items-center space-x-2">
+            <PlusCircle className="h-4 w-4" />
+            <span>Create Invoice</span>
+          </Button>
+        </Link>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">

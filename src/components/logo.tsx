@@ -15,7 +15,7 @@ export default function Logo({ className = "", size = "md" }: LogoProps) {
 
   return (
     <div className={`flex items-center ${className}`}>
-      <span className={`font-bold text-gray-900 ${sizes[size]}`}>Risitify</span>
+      <img src="/logo.png" alt="logo" className="w-30 h-10" />
     </div>
   );
 }

@@ -40,16 +40,6 @@ const navItems: NavItem[] = [
     badge: 2,
   },
   {
-    title: "Items",
-    href: "/dashboard/items",
-    icon: List,
-  },
-  {
-    title: "Banking",
-    href: "/dashboard/banking",
-    icon: CreditCard,
-  },
-  {
     title: "Sales",
     href: "/dashboard/sales",
     icon: ShoppingCart,
@@ -82,11 +72,6 @@ const navItems: NavItem[] = [
         icon: Users,
       },
     ],
-  },
-  {
-    title: "Time Tracking",
-    href: "/dashboard/time",
-    icon: Clock,
   },
   {
     title: "Reports",
