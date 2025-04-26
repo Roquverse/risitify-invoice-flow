@@ -456,7 +456,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_organization_access: {
+        Args: { org_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       payment_gateway_type: "stripe" | "paypal" | "razorpay"

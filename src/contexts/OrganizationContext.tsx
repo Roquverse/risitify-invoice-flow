@@ -50,7 +50,7 @@ export const OrganizationProvider = ({
         return;
       }
 
-      // Simplified query that uses the owner_id directly
+      // Use simpler query with direct owner_id matching
       const { data, error } = await supabase
         .from("organizations")
         .select("*")
@@ -59,33 +59,18 @@ export const OrganizationProvider = ({
 
       if (error) {
         console.error("Error fetching organization data:", error);
-        toast.error("Failed to fetch organization data");
         
-        // If no organization exists, create one
-        if (error.code === "PGRST116") {
-          const { data: newOrg, error: createError } = await supabase
-            .from("organizations")
-            .insert([
-              {
-                owner_id: user.id,
-                name: "My Organization",
-                email: user.email,
-              },
-            ])
-            .select()
-            .single();
-
-          if (createError) {
-            console.error("Error creating organization:", createError);
-            toast.error("Failed to create organization");
-          } else {
-            setOrganizationData(newOrg as OrganizationData);
-          }
+        // Only show error toast for non-PGRST116 errors
+        if (error.code !== "PGRST116") {
+          toast.error("Failed to fetch organization data");
         }
-      } else if (data) {
+      }
+
+      // If we got data successfully, use it
+      if (data) {
         setOrganizationData(data as OrganizationData);
       } else {
-        // No data but also no error - create a new organization
+        // Create a new organization if none exists
         const { data: newOrg, error: createError } = await supabase
           .from("organizations")
           .insert([
@@ -101,7 +86,7 @@ export const OrganizationProvider = ({
         if (createError) {
           console.error("Error creating organization:", createError);
           toast.error("Failed to create organization");
-        } else {
+        } else if (newOrg) {
           setOrganizationData(newOrg as OrganizationData);
         }
       }
