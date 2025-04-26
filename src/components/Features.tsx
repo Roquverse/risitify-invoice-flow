@@ -15,9 +15,12 @@ const Features = () => {
             invoicing app helps you stay organized and get paid faster — with
             zero stress.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 items-start">
-            <Link to="/signup">
-              <Button className="bg-[#0A2722] hover:bg-[#0A2722]/90 text-white px-8 py-6 text-lg rounded-xl">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/auth">
+              <Button
+                className="bg-[#0A2722] hover:bg-[#0A2722]/90 text-white px-8 py-6 text-lg rounded-xl"
+                variant="outline"
+              >
                 Get Started Free
               </Button>
             </Link>

@@ -13,11 +13,6 @@ const Support = () => {
         "Getting started with Risitify is easy! Simply sign up for an account, complete your business profile, and you can start creating professional invoices right away. Our onboarding process will guide you through customizing your invoice templates, setting up tax rates, and connecting your preferred payment methods.",
     },
     {
-      question: "What payment methods are supported?",
-      answer:
-        "Risitify supports a wide range of payment methods including credit/debit cards, bank transfers, PayPal, and other popular digital payment solutions. You can enable multiple payment options to make it convenient for your clients to pay invoices.",
-    },
-    {
       question: "How secure is my business data?",
       answer:
         "We take security seriously at Risitify. All your data is encrypted using industry-standard protocols, and we employ multiple layers of security measures to protect your business information. We regularly perform security audits and maintain compliance with data protection regulations.",
@@ -40,7 +35,7 @@ const Support = () => {
     {
       question: "Is there a mobile app available?",
       answer:
-        "Yes, Risitify offers mobile apps for both iOS and Android devices. You can create and send invoices, track payments, and manage your business on the go. The mobile app syncs seamlessly with your web account.",
+        "Soon, Risitify would be available for both iOS and Android devices. You would be able to create and send invoices, track payments, and manage your business on the go. The mobile app  will sync seamlessly with your web account.",
     },
     {
       question: "What kind of customer support do you offer?",
@@ -127,7 +122,12 @@ const Support = () => {
               </svg>
               Start Live Chat
             </button>
-            <button className="inline-flex items-center justify-center px-6 py-3 rounded-lg border border-[#84ebdb] text-[#0A2722] font-semibold hover:bg-[#84ebdb]/10 transition-colors">
+            <button
+              className="inline-flex items-center justify-center px-6 py-3 rounded-lg border border-[#84ebdb] text-[#0A2722] font-semibold hover:bg-[#84ebdb]/10 transition-colors"
+              onClick={() => {
+                window.location.href = "mailto:support@risitify.com";
+              }}
+            >
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"

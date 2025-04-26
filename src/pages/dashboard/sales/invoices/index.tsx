@@ -7,32 +7,83 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { DataTable } from "@/components/ui/data-table";
 import { PlusCircle, FileText, Download, Send } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ColumnDef } from "@tanstack/react-table";
+
+interface Invoice {
+  id: string;
+  invoiceNumber: string;
+  client: string;
+  amount: number;
+  status: "Paid" | "Pending";
+  dueDate: string;
+}
+
+const columns: ColumnDef<Invoice>[] = [
+  {
+    accessorKey: "invoiceNumber",
+    header: "Invoice Number",
+  },
+  {
+    accessorKey: "client",
+    header: "Client",
+  },
+  {
+    accessorKey: "amount",
+    header: "Amount",
+    cell: ({ row }) => {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(row.getValue("amount"));
+    },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status") as string;
+      return (
+        <span
+          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+            status === "Paid"
+              ? "bg-green-100 text-green-800"
+              : "bg-yellow-100 text-yellow-800"
+          }`}
+        >
+          {status}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "dueDate",
+    header: "Due Date",
+    cell: ({ row }) => {
+      return new Date(row.getValue("dueDate")).toLocaleDateString();
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      return (
+        <div className="text-right">
+          <Button variant="ghost" size="sm">
+            View
+          </Button>
+          <Button variant="ghost" size="sm">
+            Edit
+          </Button>
+        </div>
+      );
+    },
+  },
+];
 
 export default function InvoicesPage() {
-  console.log("InvoicesPage rendering");
-
-  const [open, setOpen] = useState(false);
-  const [invoices, setInvoices] = useState([
+  const [invoices, setInvoices] = useState<Invoice[]>([
     {
       id: "1",
       invoiceNumber: "INV-001",
@@ -51,10 +102,6 @@ export default function InvoicesPage() {
     },
   ]);
 
-  useEffect(() => {
-    console.log("InvoicesPage mounted");
-  }, []);
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -64,10 +111,10 @@ export default function InvoicesPage() {
             Manage your invoices and track payments
           </p>
         </div>
-        <Link to="/dashboard/sales/invoices/create">
-          <Button className="flex items-center space-x-2">
-            <PlusCircle className="h-4 w-4" />
-            <span>Create Invoice</span>
+        <Link to="/sales/invoices/create">
+          <Button>
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Create Invoice
           </Button>
         </Link>
       </div>
@@ -115,54 +162,11 @@ export default function InvoicesPage() {
           <CardDescription>A list of your recent invoices</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Invoice Number</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {invoices.map((invoice) => (
-                <TableRow key={invoice.id}>
-                  <TableCell>{invoice.invoiceNumber}</TableCell>
-                  <TableCell>{invoice.client}</TableCell>
-                  <TableCell>
-                    {new Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    }).format(invoice.amount)}
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        invoice.status === "Paid"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
-                      {invoice.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(invoice.dueDate).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="sm">
-                      View
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      Edit
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <DataTable
+            columns={columns}
+            data={invoices}
+            searchKey="invoiceNumber"
+          />
         </CardContent>
       </Card>
     </div>

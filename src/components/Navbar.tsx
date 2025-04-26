@@ -1,78 +1,176 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useOrganization } from "@/contexts/OrganizationContext";
+import { supabase } from "@/lib/supabase";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Bell, User } from "lucide-react";
 
-import { Button } from "./ui/button";
-import Logo from "@/components/logo";
-import { Link, useNavigate } from "react-router-dom";
+interface ProfileData {
+  first_name: string | null;
+  last_name: string | null;
+  avatar_url: string | null;
+}
 
-const Navbar = () => {
-  const navigate = useNavigate();
+interface AccountSettings {
+  timezone: string | null;
+  currency: string | null;
+}
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    } else {
-      // If we're not on the home page, navigate to home and then scroll
-      navigate('/', { state: { scrollTo: sectionId } });
+interface OrganizationData {
+  name: string | null;
+  industry: string | null;
+}
+
+export default function Navbar() {
+  const { user, signOut } = useAuth();
+  const { organizationData } = useOrganization();
+  const [profileCompletion, setProfileCompletion] = useState(0);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [accountSettings, setAccountSettings] =
+    useState<AccountSettings | null>(null);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchProfileData();
     }
+  }, [user]);
+
+  const fetchProfileData = async () => {
+    if (!user?.id) return;
+
+    // Fetch profile data
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    // Fetch account settings
+    const { data: accountData } = await supabase
+      .from("account_settings")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    setProfileData(profileData);
+    setAccountSettings(accountData);
+    calculateProfileCompletion(profileData, accountData, organizationData);
+  };
+
+  const calculateProfileCompletion = (
+    profile: ProfileData | null,
+    settings: AccountSettings | null,
+    org: OrganizationData | null
+  ) => {
+    let completed = 0;
+    let total = 8; // Total number of fields we're checking
+
+    // Check profile fields
+    if (profile?.first_name) completed++;
+    if (profile?.last_name) completed++;
+    if (profile?.avatar_url) completed++;
+
+    // Check organization fields
+    if (org?.name) completed++;
+    if (org?.industry) completed++;
+
+    // Check account settings
+    if (settings?.timezone) completed++;
+    if (settings?.currency) completed++;
+
+    // Check if email is verified
+    if (user?.email) completed++;
+
+    const percentage = (completed / total) * 100;
+    setProfileCompletion(Math.round(percentage));
   };
 
   return (
-    <nav className="w-full bg-white border-b border-gray-200 fixed top-0 z-50">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-8 lg:px-12">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <Logo />
-          </Link>
-
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => scrollToSection("features")}
-              className="text-gray-600 hover:text-[#0A2722] transition-colors"
-            >
-              Features
-            </button>
-            <button
-              onClick={() => scrollToSection("how-it-works")}
-              className="text-gray-600 hover:text-[#0A2722] transition-colors"
-            >
-              How It Works
-            </button>
-            <button
-              onClick={() => scrollToSection("faq")}
-              className="text-gray-600 hover:text-[#0A2722] transition-colors"
-            >
-              FAQ
-            </button>
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="text-gray-600 hover:text-[#0A2722] transition-colors"
-            >
-              Contact
-            </button>
+    <nav className="border-b bg-white">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-8">
+            <Link to="/dashboard" className="text-xl font-bold text-gray-900">
+              Risitify
+            </Link>
           </div>
 
-          {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
-            <Link to="/auth">
-              <Button
-                variant="outline"
-                className="border-2 text-gray-900 hover:bg-gray-50"
-              >
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/auth">
-              <Button className="bg-[#0A2722] hover:bg-[#0A2722]/90 text-white">
-                Sign Up
-              </Button>
-            </Link>
+            <div className="hidden md:block">
+              <div className="flex items-center space-x-2">
+                <Progress value={profileCompletion} className="w-32" />
+                <span className="text-sm text-gray-600">
+                  Profile {profileCompletion}%
+                </span>
+              </div>
+            </div>
+
+            <Button variant="ghost" size="icon">
+              <Bell className="h-5 w-5" />
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src={profileData?.avatar_url || ""}
+                      alt={profileData?.first_name || ""}
+                    />
+                    <AvatarFallback>
+                      <User className="h-4 w-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {profileData?.first_name} {profileData?.last_name}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/settings?tab=profile" className="w-full">
+                    Profile Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/settings?tab=organization" className="w-full">
+                    Organization Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-red-600 cursor-pointer"
+                  onClick={() => signOut()}
+                >
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}

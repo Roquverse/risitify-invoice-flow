@@ -29,29 +29,14 @@ const FlexiblePayment = () => {
               </div>
             </div>
             <div className="order-1 lg:order-2">
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="space-y-4">
-                  <div className="h-6 bg-gray-100 rounded w-3/4"></div>
-                  <div className="h-6 bg-gray-100 rounded w-1/2"></div>
-                  <div className="h-12 bg-[#84ebdb] rounded"></div>
-                </div>
-              </div>
+              <img src="./1.png" alt="" width={500} />
             </div>
           </div>
 
           {/* Step 2 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="order-2">
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="h-6 bg-gray-100 rounded w-1/3"></div>
-                    <div className="h-6 bg-gray-100 rounded w-1/4"></div>
-                  </div>
-                  <div className="h-6 bg-gray-100 rounded w-full"></div>
-                  <div className="h-6 bg-gray-100 rounded w-2/3"></div>
-                </div>
-              </div>
+              <img src="./2.png" alt="" width={500} />
             </div>
             <div className="order-1">
               <div className="bg-[#84ebdb]/10 rounded-2xl p-8">
@@ -88,37 +73,14 @@ const FlexiblePayment = () => {
               </div>
             </div>
             <div className="order-1 lg:order-2">
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="space-y-4">
-                  <div className="h-12 bg-[#84ebdb] rounded mb-4"></div>
-                  <div className="flex items-center space-x-3">
-                    <div className="h-6 w-6 rounded-full bg-green-500"></div>
-                    <div className="h-6 bg-gray-100 rounded w-1/2"></div>
-                  </div>
-                </div>
-              </div>
+              <img src="./4.png" alt="" width={500} />
             </div>
           </div>
 
           {/* Step 4 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="order-2">
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="h-24 bg-gray-100 rounded flex items-center justify-center">
-                    <div className="h-12 w-12 bg-[#84ebdb] rounded"></div>
-                  </div>
-                  <div className="h-24 bg-gray-100 rounded flex items-center justify-center">
-                    <div className="h-12 w-12 bg-[#84ebdb] rounded"></div>
-                  </div>
-                  <div className="h-24 bg-gray-100 rounded flex items-center justify-center">
-                    <div className="h-12 w-12 bg-[#84ebdb] rounded"></div>
-                  </div>
-                  <div className="h-24 bg-gray-100 rounded flex items-center justify-center">
-                    <div className="h-12 w-12 bg-[#84ebdb] rounded"></div>
-                  </div>
-                </div>
-              </div>
+              <img src="./3.png" alt="" width={500} />
             </div>
             <div className="order-1">
               <div className="bg-[#84ebdb]/10 rounded-2xl p-8">

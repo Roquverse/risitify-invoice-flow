@@ -1,18 +1,27 @@
-
 import { Routes, Route } from "react-router-dom";
-import { DashboardShell } from "../pages/dashboard/components/dashboard-shell";
-import DashboardOverview from "../pages/dashboard/index";
-import Settings from "../pages/dashboard/settings";
-import InvoicesPage from "../pages/dashboard/sales/invoices";
+import { DashboardLayout } from "../components/layouts/dashboard-layout";
+import CreateInvoice from "../pages/dashboard/sales/invoices/create";
+
+// Placeholder components
+const DashboardHome = () => <div>Dashboard Home</div>;
+const Customers = () => <div>Customers</div>;
+const InvoicesList = () => <div>Invoices List</div>;
+const Quotes = () => <div>Quotes</div>;
+const Payments = () => <div>Payments</div>;
+const Settings = () => <div>Settings</div>;
 
 export function DashboardRoutes() {
   return (
-    <DashboardShell>
+    <DashboardLayout>
       <Routes>
-        <Route index element={<DashboardOverview />} />
-        <Route path="settings" element={<Settings />} />
-        <Route path="sales/invoices" element={<InvoicesPage />} />
+        <Route path="/" element={<DashboardHome />} />
+        <Route path="/customers" element={<Customers />} />
+        <Route path="/sales/invoices" element={<InvoicesList />} />
+        <Route path="/sales/invoices/create" element={<CreateInvoice />} />
+        <Route path="/quotes" element={<Quotes />} />
+        <Route path="/payments" element={<Payments />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
-    </DashboardShell>
+    </DashboardLayout>
   );
 }

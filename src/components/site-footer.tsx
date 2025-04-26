@@ -1,7 +1,7 @@
-
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/logo";
+import { Button } from "./ui/button";
 
 interface FooterLinkGroupProps {
   title: string;
@@ -32,40 +32,47 @@ export function SiteFooter({ className }: { className?: string }) {
   return (
     <footer className={cn("border-t bg-background", className)}>
       <div className="container py-12">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 flex flex-col gap-4">
-            <Logo variant="dark" size="lg" />
+            <Logo size="lg" />
             <p className="text-sm text-muted-foreground max-w-xs">
-              Simple, professional invoicing software for businesses of all sizes
+              Simple, professional invoicing software for businesses of all
+              sizes
             </p>
+            {/* Newsletter Subscription */}
+            <div className="mt-4">
+              <h4 className="text-sm font-medium mb-3">
+                Subscribe to our newsletter
+              </h4>
+              <form className="flex gap-2">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-[#84ebdb] focus:border-transparent"
+                />
+                <Button className="bg-[#0A2722] hover:bg-[#0A2722]/90 text-white">
+                  Subscribe
+                </Button>
+              </form>
+            </div>
           </div>
-          
-          <FooterLinkGroup 
+
+          <FooterLinkGroup
             title="Quick Links"
             links={[
               { label: "Features", href: "/#features" },
               { label: "Pricing", href: "/#pricing" },
               { label: "About Us", href: "/#about" },
-              { label: "Contact", href: "/contact" }
+              { label: "Contact", href: "/contact" },
             ]}
           />
 
-          <FooterLinkGroup 
-            title="Resources"
-            links={[
-              { label: "Help Center", href: "/help" },
-              { label: "Blog", href: "/blog" },
-              { label: "Templates", href: "/templates" },
-              { label: "Guides", href: "/guides" }
-            ]}
-          />
-
-          <FooterLinkGroup 
+          <FooterLinkGroup
             title="Legal"
             links={[
               { label: "Privacy Policy", href: "/privacy" },
               { label: "Terms of Service", href: "/terms" },
-              { label: "Cookie Policy", href: "/cookies" }
+              { label: "Cookie Policy", href: "/cookies" },
             ]}
           />
         </div>
@@ -75,13 +82,56 @@ export function SiteFooter({ className }: { className?: string }) {
           </p>
           <div className="flex gap-4">
             <a href="#" className="text-muted-foreground hover:text-foreground">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-twitter"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-twitter"
+              >
+                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+              </svg>
             </a>
             <a href="#" className="text-muted-foreground hover:text-foreground">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-linkedin"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-linkedin"
+              >
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                <rect width="4" height="12" x="2" y="9" />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
             </a>
             <a href="#" className="text-muted-foreground hover:text-foreground">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-instagram"
+              >
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+              </svg>
             </a>
           </div>
         </div>

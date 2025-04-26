@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import Features from "@/components/Features";
 import FlexiblePayment from "@/components/FlexiblePayment";
 import Support from "@/components/Support";
+import About from "@/components/About";
 
 export default function Index() {
   return (
@@ -12,7 +13,10 @@ export default function Index() {
       <SiteHeader />
       <main className="flex-1">
         {/* Hero Section */}
-        <div id="home" className="w-full bg-[#0A2722] text-white relative overflow-hidden m-0 p-0">
+        <div
+          id="home"
+          className="w-full bg-[#0A2722] text-white relative overflow-hidden m-0 p-0"
+        >
           <div className="max-w-[1400px] mx-auto px-8 pt-32 pb-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               {/* Left Content */}
@@ -31,12 +35,12 @@ export default function Index() {
                   dashboard.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start">
-                  <Link to="/signup">
+                  <Link to="/auth">
                     <Button className="bg-[#84ebdb] hover:bg-[#6bdccb] text-gray-900 font-medium px-8 py-6 text-lg w-full sm:w-auto">
                       Get Started Free
                     </Button>
                   </Link>
-                  <Link to="#features">
+                  <Link to="#how-it-works">
                     <Button
                       variant="outline"
                       className="bg-white/10 backdrop-blur-sm border-0 hover:bg-white/20 text-white font-medium px-8 py-6 text-lg w-full sm:w-auto"
@@ -53,13 +57,18 @@ export default function Index() {
                   </p>
                   <div className="flex flex-wrap gap-8 items-center opacity-70 justify-center lg:justify-start">
                     {[
-                      "HubSpot",
-                      "Dropbox",
-                      "Square",
-                      "Stripe",
-                      "Atlassian",
-                    ].map((partner) => (
-                      <div key={partner} className="text-lg font-medium">
+                      <img
+                        src="./clients/avatec.png"
+                        alt="logo"
+                        className="w-30 h-10"
+                      ></img>,
+                      <img
+                        src="./clients/pace.PNG"
+                        alt="logo"
+                        width={100}
+                      ></img>,
+                    ].map((partner, index) => (
+                      <div key={index} className="text-lg font-medium">
                         {partner}
                       </div>
                     ))}
@@ -287,6 +296,9 @@ export default function Index() {
             </div>
           </div>
         </section>
+
+        {/* About Section */}
+        <About />
 
         {/* Support Section */}
         <div id="faq">

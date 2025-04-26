@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
   Home,
@@ -41,17 +41,17 @@ const navItems: NavItem[] = [
   },
   {
     title: "Sales",
-    href: "/dashboard/sales",
+    href: "/sales",
     icon: ShoppingCart,
     children: [
       {
         title: "Invoices",
-        href: "/dashboard/sales/invoices",
+        href: "/sales/invoices",
         icon: FileText,
       },
       {
         title: "Customers",
-        href: "/dashboard/sales/customers",
+        href: "/sales/customers",
         icon: Users,
       },
     ],
@@ -87,10 +87,20 @@ const navItems: NavItem[] = [
 
 export function SidebarNav({ collapsed, setCollapsed }: SidebarNavProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleItemClick = (item: NavItem, e: React.MouseEvent) => {
+    if (item.children) {
+      e.preventDefault();
+      setActiveDropdown(activeDropdown === item.href ? null : item.href);
+    } else {
+      navigate(item.href);
+    }
   };
 
   return (
@@ -125,8 +135,8 @@ export function SidebarNav({ collapsed, setCollapsed }: SidebarNavProps) {
 
               return (
                 <div key={item.href} className="relative">
-                  <Link
-                    to={item.href}
+                  <button
+                    onClick={(e) => handleItemClick(item, e)}
                     className={cn(
                       "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
                       isActive
@@ -134,14 +144,6 @@ export function SidebarNav({ collapsed, setCollapsed }: SidebarNavProps) {
                         : "text-gray-700 hover:bg-gray-100",
                       collapsed && "justify-center px-2"
                     )}
-                    onClick={(e) => {
-                      if (item.children) {
-                        e.preventDefault();
-                        setActiveDropdown(
-                          activeDropdown === item.href ? null : item.href
-                        );
-                      }
-                    }}
                   >
                     <item.icon className="h-5 w-5" />
                     {!collapsed && (
@@ -162,17 +164,17 @@ export function SidebarNav({ collapsed, setCollapsed }: SidebarNavProps) {
                         )}
                       </>
                     )}
-                  </Link>
+                  </button>
                   {!collapsed &&
                     item.children &&
                     activeDropdown === item.href && (
                       <div className="mt-1 ml-4 pl-4 border-l-2 border-[#153f32]/20">
                         {item.children.map((child) => (
-                          <Link
+                          <button
                             key={child.href}
-                            to={child.href}
+                            onClick={() => navigate(child.href)}
                             className={cn(
-                              "flex items-center py-2 px-3 text-sm rounded-lg transition-colors",
+                              "flex items-center py-2 px-3 text-sm rounded-lg transition-colors w-full",
                               location.pathname === child.href
                                 ? "text-[#153f32] font-medium"
                                 : "text-gray-600 hover:text-[#153f32]"
@@ -180,7 +182,7 @@ export function SidebarNav({ collapsed, setCollapsed }: SidebarNavProps) {
                           >
                             <child.icon className="h-4 w-4 mr-2" />
                             <span>{child.title}</span>
-                          </Link>
+                          </button>
                         ))}
                       </div>
                     )}
