@@ -50,17 +50,19 @@ export const OrganizationProvider = ({
         return;
       }
 
+      // Simplified query that uses the owner_id directly
       const { data, error } = await supabase
         .from("organizations")
-        .select(
-          "id, name, industry, registration_number, tax_id, address, email, phone, website, logo, owner_id"
-        )
+        .select("*")
         .eq("owner_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
+        console.error("Error fetching organization data:", error);
+        toast.error("Failed to fetch organization data");
+        
+        // If no organization exists, create one
         if (error.code === "PGRST116") {
-          // No organization found, create one
           const { data: newOrg, error: createError } = await supabase
             .from("organizations")
             .insert([
@@ -76,16 +78,32 @@ export const OrganizationProvider = ({
           if (createError) {
             console.error("Error creating organization:", createError);
             toast.error("Failed to create organization");
-            return;
+          } else {
+            setOrganizationData(newOrg as OrganizationData);
           }
-
-          setOrganizationData(newOrg as OrganizationData);
-        } else {
-          console.error("Error fetching organization data:", error);
-          toast.error("Failed to fetch organization data");
         }
-      } else {
+      } else if (data) {
         setOrganizationData(data as OrganizationData);
+      } else {
+        // No data but also no error - create a new organization
+        const { data: newOrg, error: createError } = await supabase
+          .from("organizations")
+          .insert([
+            {
+              owner_id: user.id,
+              name: "My Organization",
+              email: user.email,
+            },
+          ])
+          .select()
+          .single();
+
+        if (createError) {
+          console.error("Error creating organization:", createError);
+          toast.error("Failed to create organization");
+        } else {
+          setOrganizationData(newOrg as OrganizationData);
+        }
       }
     } catch (error) {
       console.error("Error in fetchOrganizationData:", error);
@@ -128,8 +146,11 @@ export const OrganizationProvider = ({
         ...prev!,
         ...data,
       }));
+      
+      toast.success("Organization updated successfully");
     } catch (err) {
       console.error("Error updating organization:", err);
+      toast.error("Failed to update organization");
       throw err;
     }
   };
