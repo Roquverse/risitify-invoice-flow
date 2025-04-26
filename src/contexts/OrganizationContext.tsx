@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "./AuthContext";
@@ -40,12 +41,12 @@ export const OrganizationProvider = ({
   const [organizationData, setOrganizationData] =
     useState<OrganizationData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
 
   const fetchOrganizationData = async () => {
     try {
       if (!user) {
         setOrganizationData(null);
+        setLoading(false);
         return;
       }
 
@@ -79,15 +80,13 @@ export const OrganizationProvider = ({
           }
 
           setOrganizationData(newOrg as OrganizationData);
-          return;
+        } else {
+          console.error("Error fetching organization data:", error);
+          toast.error("Failed to fetch organization data");
         }
-
-        console.error("Error fetching organization data:", error);
-        toast.error("Failed to fetch organization data");
-        return;
+      } else {
+        setOrganizationData(data as OrganizationData);
       }
-
-      setOrganizationData(data as OrganizationData);
     } catch (error) {
       console.error("Error in fetchOrganizationData:", error);
       toast.error("An error occurred while fetching organization data");
@@ -99,10 +98,6 @@ export const OrganizationProvider = ({
   useEffect(() => {
     fetchOrganizationData();
   }, [user]);
-
-  const refreshOrganization = async () => {
-    await fetchOrganizationData();
-  };
 
   const updateOrganizationData = async (data: Partial<OrganizationData>) => {
     try {

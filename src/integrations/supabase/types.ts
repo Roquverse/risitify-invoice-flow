@@ -11,27 +11,27 @@ export type Database = {
     Tables: {
       account_settings: {
         Row: {
-          created_at: string
+          created_at: string | null
           currency: string | null
           id: string
           timezone: string | null
-          updated_at: string
+          updated_at: string | null
           user_id: string
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           currency?: string | null
           id?: string
           timezone?: string | null
-          updated_at?: string
+          updated_at?: string | null
           user_id: string
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           currency?: string | null
           id?: string
           timezone?: string | null
-          updated_at?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -67,15 +67,7 @@ export type Database = {
           related_table?: string | null
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "activity_log_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       bank_accounts: {
         Row: {
@@ -218,8 +210,36 @@ export type Database = {
             referencedRelation: "customers"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      organization_users: {
+        Row: {
+          created_at: string | null
+          id: string
+          organization_id: string
+          role: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          organization_id: string
+          role?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          organization_id?: string
+          role?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
           {
-            foreignKeyName: "invoices_organization_id_fkey"
+            foreignKeyName: "organization_users_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -229,28 +249,49 @@ export type Database = {
       }
       organizations: {
         Row: {
-          created_at: string
+          address: string | null
+          created_at: string | null
+          email: string | null
           id: string
           industry: string | null
+          logo: string | null
           name: string
-          updated_at: string
-          user_id: string
+          owner_id: string
+          phone: string | null
+          registration_number: string | null
+          tax_id: string | null
+          updated_at: string | null
+          website: string | null
         }
         Insert: {
-          created_at?: string
+          address?: string | null
+          created_at?: string | null
+          email?: string | null
           id?: string
           industry?: string | null
+          logo?: string | null
           name: string
-          updated_at?: string
-          user_id: string
+          owner_id: string
+          phone?: string | null
+          registration_number?: string | null
+          tax_id?: string | null
+          updated_at?: string | null
+          website?: string | null
         }
         Update: {
-          created_at?: string
+          address?: string | null
+          created_at?: string | null
+          email?: string | null
           id?: string
           industry?: string | null
+          logo?: string | null
           name?: string
-          updated_at?: string
-          user_id?: string
+          owner_id?: string
+          phone?: string | null
+          registration_number?: string | null
+          tax_id?: string | null
+          updated_at?: string | null
+          website?: string | null
         }
         Relationships: []
       }
@@ -288,15 +329,7 @@ export type Database = {
           updated_at?: string
           webhook_url?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "payment_gateway_settings_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: true
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       payments: {
         Row: {
@@ -350,36 +383,41 @@ export type Database = {
             referencedRelation: "invoices"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "payments_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
         ]
       }
       profiles: {
         Row: {
+          auth_user_id: string
+          avatar_url: string | null
+          created_at: string | null
           email: string | null
           first_name: string | null
           id: string
           last_name: string | null
-          phone: number | null
+          phone: string | null
+          updated_at: string | null
         }
         Insert: {
-          email?: string | null
-          first_name?: string | null
-          id: string
-          last_name?: string | null
-          phone?: number | null
-        }
-        Update: {
+          auth_user_id: string
+          avatar_url?: string | null
+          created_at?: string | null
           email?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
-          phone?: number | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          auth_user_id?: string
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }

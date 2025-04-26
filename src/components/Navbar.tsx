@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -49,23 +50,37 @@ export default function Navbar() {
   const fetchProfileData = async () => {
     if (!user?.id) return;
 
-    // Fetch profile data
-    const { data: profileData } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
+    try {
+      // Fetch profile data - using auth_user_id instead of id
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("auth_user_id", user.id)
+        .single();
 
-    // Fetch account settings
-    const { data: accountData } = await supabase
-      .from("account_settings")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+      if (profileError) {
+        console.error("Error fetching profile data:", profileError);
+      } else {
+        setProfileData(profileData);
+      }
 
-    setProfileData(profileData);
-    setAccountSettings(accountData);
-    calculateProfileCompletion(profileData, accountData, organizationData);
+      // Fetch account settings
+      const { data: accountData, error: accountError } = await supabase
+        .from("account_settings")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (accountError) {
+        console.error("Error fetching account settings:", accountError);
+      } else {
+        setAccountSettings(accountData);
+      }
+
+      calculateProfileCompletion(profileData, accountData, organizationData);
+    } catch (error) {
+      console.error("Error in fetchProfileData:", error);
+    }
   };
 
   const calculateProfileCompletion = (
